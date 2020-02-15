@@ -1,0 +1,83 @@
+代码如下<MARQUEE>滚动文字</MARQUEE>
+
+<marquee style="WIDTH: 388px; HEIGHT: 200px" scrollamount="2" direction="up" >
+<div align="left" ><br />
+</div >
+<center ><font face="黑体" color="#008000" size="4" ></font ></center >
+<div align="left" ><br />
+</div >
+<center >
+<p ><font color="#ff6600" size="4" >滚动文字</font ></p >
+<p ><font color="#ff4500" size="4" >滚动文字</font ></p >
+<p ><font color="#ff3300" size="4" >滚动文字</font ><br />
+<br />
+</p >
+</marquee >
+
+
+marquee 参数： 
+BGColor：滚动文本框的背景颜色。 
+Direction：滚动方向设置，可选择Left、Right、up和down。 
+scrolldelay：每轮滚动之间的延迟时间，越大越慢。 
+scrollamount：一次滚动总的时间量，数字越小滚动越慢。 
+Behaviour：滚动的方式设置，三种取值：Scroll（循环滚动） lide（单次滚动）、Alternate（来回滚动）。 
+Align：文字的对齐方式设置。可选择Middle(居中)、Bottom(居下)还是Top(居上)。 
+Width：滚动文本框的宽度，输入一个数值后从后面的单选框选择in Pixels(按像素)或是in Percent(按百分比)。 
+Height：滚动文本框的高度，输入一个数值后从后面的单选框选择in Pixels(按像素)或是in Percent(按百分比)。 
+loop：滚动次数。默认为infinite 
+hspace、vspace：前后、上下的空行。
+
+     滚动字幕会让很多人感到兴奋，特别是第一次使用滚动字幕时，会爱不释手。滚动字幕我也做得不少了，对它也不会兴奋了，所以现在也用得不多了。有不少朋友常 问到这是怎么做的，现在做一个详细的专题，让你更全面地了解一下。 
+滚动字幕在FrontPage的组件里有，但是FrontPage这个软件只能支持单行文字，一出现多行文字它就无能为力了，而且它只能支持一行滚动！ (如果出现只能滚动一行的情况，解决办法是把这段代码嵌入到JavaScript的document.write里面，请看下面例d的详细说 明)Dreamweaver也只能用编写HTML代码的方法。所以强烈建议用记事本打开网页源代码来编辑。
+
+1.建立第一个滚动字幕。代码：
+<marquee scrollAmount=2 width=300>靓丽风景线</marquee>
+效果如： 靓丽风景线
+
+2.各参数详解：
+a)scrollAmount。它表示速度，值越大速度越快。如果没有它，默认为6，建议设为1～3比较好。
+b)width和height，表示滚动区域的大小，width是宽度，height是高度。特别是在做垂直滚动的时候，一定要设height的值。
+c)direction。表示滚动的方向，默认为从右向左：←←←。可选的值有right、down、up。滚动方向分别为：right表示→→→，up 表示↑，down表示↓。
+d)scrollDelay，这也是用来控制速度的，默认为90，值越大，速度越慢。通常scrollDelay是不需要设置的。
+e)behavior。用它来控制属性，默认为循环滚动，可选的值有alternate(交替滚动)、slide(幻灯片效果，指的是滚动一次，然后停止 滚动)
+
+3.实例：
+a)如何给滚动字幕加超链接？这跟平时的超链接是完全一样的。只要在文字外面加上<a href=***>和</a>就可以了。如下效果，代码是<marquee scrollAmount=2 width=300><a href=http://www.cctv.com>中央电视台</a></marquee>，点击中央电视台就可以进入 了：
+中央电视台
+
+b)如何制作当鼠标停留在文字上，文字停止滚动？
+代码如：
+<marquee scrollAmount=2 width=300 onmouseover=stop() onmouseout=start()>文字内容</marquee>
+效果如：
+文字内容
+
+c)交替效果。代码如：
+<marquee scrollAmount=2 width=99 behavior=alternate>文字内容</marquee>
+效果如：
+文字内容
+
+d)多行文本向上滚动。代码如：
+<marquee scrollAmount=2 width=300 height=160 direction=up>·早晨好啊！<br>·空气好清新啊<br>·你还好吗<p>·<a href=http://www.cctv.com>靓丽风景线</a></marquee>
+效果如：
+·早晨好啊！
+·空气好清新啊
+·你还好吗 
+·靓丽风景线
+
+·注意：如果你的网页经过了FrontPage编辑，保存之后，只能滚动一行，这时候你发现你原 来的代码顺序已经变了，My god！解决的办法是，找出原来的代码，把它嵌入到JavaScript的document.write中即可，上述代码写为：
+<script>document.write('<marquee scrollAmount=2 width=300 height=160 direction=up>·早晨好啊！<br>·空气好清新啊<br>·你还好吗 <p>·<a href=http://www.cctv.com>靓丽风景线</a></marquee>')< /script>
+
+e)改变滚动字幕的颜色？可以用样式表来控制。如下效果，代码是<marquee scrollAmount=2 width=300><a style=color:CC6600>你还好吗</a></marquee>。
+你还好吗
+
+图片滚动
+用<img src=相对路径/文件名>的语句。并且要注意图片名不要中文，要注意区分英文大小写。
+
+图片做超链接
+用<a href=>和</a>把<img>包围，并且img必须设border=0，否则图片会出现蓝框。正确的例子如：& lt;a href=http://www.webshu.com><img src=../../j/01.jpg border=0></a>
+其中a href=表示超链接，这是最常用的。练习的方法也很简单，就是平时用FP或DW做网页的时候，要多查看源代码。
+
+多张图片排列滚动
+通常图片和图片之间用<br>(回行)或<p style=margin-top:9>(精确调整图片间的距离)来链接。也可以把你的图片先用表格排版，然后把这个表格的所有语句也加入到 marquee中，让这个表格来滚动。  
+
+代码<script>document.write('<marquee scrollAmount=2 width=340 height=160 direction=up onmouseover=stop() onmouseout=start()><a href=http://www.webshu.com><img src=../../j/01.jpg border=0></a></marquee>')</script>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css" media="all">
+	<script src="__STATIC__/plugins/layui/layui.js"></script>
+	<style type="text/css">
+		.header span{background: #009688;margin-left: 30px;padding: 10px;color:#ffffff;}
+		.header div{border-bottom: solid 2px #009688;margin-top: 8px;}
+		.header button{float: right;margin-top: -5px;}
+	</style>
+</head>
+<body style="padding: 10px;">
+	<div class="header">
+		<span>车辆</span>
+{in name="$m_add['mid']" value="$b"}
+		<button class="layui-btn layui-btn-sm" onclick="add()">添加</button>
+		{/in}
+		<div></div>
+
+	</div>
+<div class="layui-form-item" style="margin-top: 10px;">
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" value="陕F{$bus.ch}" id="ch" placeholder="请输入查找的车号">
+		</div>
+		<button class="layui-btn layui-btn-primary" onclick="searchs()"><i class="layui-icon">&#xe615;</i>搜索</button>
+	</div>
+<table id="demo"class="layui-hide" lay-filter="demo"></table>
+
+	<script>
+		layui.use(['layer','table','form'],function(){
+			layer = layui.layer;
+			table = layui.table;
+			form = layui.form;
+			$ = layui.jquery;
+
+//第一个实例
+  table.render({
+    elem: '#demo'
+    ,height:730
+   // ,url: '{:url(index)} //数据接口
+    ,page: true //开启分页
+	,id: 'demo'
+	,data:{$json}
+    ,cols: [[ //表头
+      {type:'numbers',sort: true}
+	,{type: 'checkbox'}
+      ,{field: 'ch', title: '车号', width:100}
+      ,{field: 'type', title: '车型', width:80, sort: true}
+      ,{field: 'xsz',title: '行驶证', width:80,toolbar:'#xsz'} 
+      ,{field: 'yyz',title: '营运证', width:80,toolbar:'#yyz'} 
+      ,{field: 'pic',title: '外观', width:80,toolbar:'#pic'} 
+      ,{field: 'zw', title: '座位', width:60} 
+      ,{field: 'rq', title: '车辆登记日期', width:120} 
+      ,{field: 'lj', title: '类型登记', width:80} 
+      ,{field: 'jsdj', title: '技术等级', width:80} 
+      ,{field: 'dlzh', title: '道路运输证号', width:150} 
+      ,{field: 'kyxl', title: '客运线路', width:130} 
+      ,{field: 'isjps', title: '安装jps', width:80} 
+      ,{field: 'syrq', title: '审验日期', width:120} 
+      ,{field: 'bz', title: '备注', width:120} 
+      ,{title: '操作', width:'auto',toolbar:'#bar'} 
+      
+    ]],
+limit: 16 
+  });
+
+		});
+	</script>
+	<script id="bar">
+	<button class="layui-btn  layui-btn-xs" onclick="gaikuang({{d.id}})">查看</button>
+	<a href='gaikuang/?id={{d.id}}'class="layui-btn  layui-btn-xs"  target="_blank" >打印</a>
+{in name="$m_add['mid']" value="$b"}
+	<button class="layui-btn  layui-btn-xs" onclick="add({{d.id}})">编辑</button>
+{/in}
+{in name="$m_del['mid']" value="$b"}
+	<button class="layui-btn layui-btn-danger layui-btn-xs" onclick="del({{d.id}})">删除</button>
+{/in}
+	</script>
+<script id="xsz">
+ {{# if(d.xsz){ }}<img src="/bus/{{d.xsz}}" height="35px"alt=""onmouseover="layer.tips('<img src=/bus/{{d.xsz}} width=200%>',this,{tips: [2, '#fff']});" onmouseout="layer.closeAll();">{{# } }}
+	</script>
+</script>
+<script id="yyz">
+ {{# if(d.yyz){ }}<img src="/bus/{{d.yyz}}" height="35px"alt=""onmouseover="layer.tips('<img src=/bus/{{d.yyz}} width=200%>',this,{tips: [2, '#fff']});" onmouseout="layer.closeAll();">{{# } }}
+	</script>
+<script id="pic">
+ {{# if(d.pic){ }}<img src="/bus/{{d.pic}}" height="35px"alt=""onmouseover="layer.tips('<img src=/bus/{{d.pic}} width=200%>',this,{tips: [2, '#fff']});" onmouseout="layer.closeAll();">{{# } }}
+	</script>
+	<script>
+		layui.use(['layer'],function(){
+			layer = layui.layer;
+			$ = layui.jquery;
+ //图片按钮点击事件
+        $('.tupian').on('click',function () {
+            var aid=$(this).attr("id");
+            if($(this).hasClass('layui-btn-disabled')){
+                return false;
+            }
+            layer.open({
+                type: 2,
+                title:'图片',
+                area: ['700px', '450px'],
+                fixed: false, //不固定
+                maxmin: true,
+                content: '{:url("admin/article/pics")}?aid='+aid
+            });
+        });
+		});
+
+		// 添加编辑
+		function add(id){
+			layer.open({
+			  type: 2,
+			  title: id>0?'编辑车辆信息':'添加车辆信息',
+			  shade: 0.3,
+			  area: ['1350px', '100%'],
+                maxmin: true,
+			 // content: '/admins.php/admins/Admin/add?id='+id
+			  content: '{:url("add")}?id='+id
+			});
+		}
+
+		// 删除
+		function del(id){
+			layer.confirm('确定要删除吗？', {
+			  btn: ['确定','取消']
+			}, function(){
+			  $.post('{:url("del")}',{'id':id},function(res){
+			  	if(res.code>0){
+			  		layer.alert(res.msg,{icon:2});
+			  	}else{
+			  		layer.msg(res.msg);
+			  		setTimeout(function(){window.location.reload();},1000);
+			  	}
+			  },'json');
+			});
+		}
+//图片预览
+  $('.thumb').hover(function(){
+    $(this).append('<img  src="'+$(this).attr('/{$vo.pic}')+'" >');
+  },function(){
+    $(this).find('img').remove();
+  });
+ function tClick(id){
+         // var url = $('#'+id).children('td').children('img').attr('src');
+          var url = $('#'+id).attr('src');
+          //页面层
+          layer.open({
+            type: 1,
+			title:'图片',
+            skin: '', //加上边框
+            area: ['900px', ''], //宽高
+			maxmin: true,
+            content: "<center style='margin:20px;'><img  width='800' src="+url+"></center>"
+          });
+      }
+function gaikuang(id){
+            layer.open({
+            type: 2,
+			title:'车辆信息表',
+            skin: '', //加上边框
+            area: ['210mm', '230mm'], //宽高
+			maxmin: true,
+            content: '{:url("gaikuang")}?id='+id
+          });
+      }
+	
+// 搜索
+		function searchs(curpage){
+			var ch = $.trim($('#ch').val());
+			var url = "{:url('index')}?page="+curpage;
+			if(ch){
+				url += '&ch='+ch;
+			}
+			window.location.href = url;
+		}
+</script>
+</body>
+</html>

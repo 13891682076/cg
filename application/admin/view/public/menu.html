@@ -1,0 +1,19 @@
+<!--菜单-->
+	<div class="menu" id="menu">
+		<div class="layui-collapse" lay-accordion>
+		  {volist name="menus" id="vo"}
+		  <div class="layui-colla-item">
+		    <h2 class="layui-colla-title">{$vo.title}</h2>
+		    <div class="layui-colla-content{$i==1?' layui-show':''}">
+		    	<?php if(isset($vo['children']) && $vo['children']){?>
+		    	<ul class="layui-nav layui-nav-tree" lay-filter="test">
+		    		{volist name="vo.children" id="cvo"}
+					<li class="layui-nav-item"><a href="javascript:;" onclick="menuFire(this)" src="/index.php/admin/{$cvo.controller}/{$cvo.method}">{$cvo.title}</a></li>
+		    		{/volist}
+				</ul>
+				<?php }?>
+		    </div>
+		  </div>
+		  {/volist}
+		</div>
+	</div>

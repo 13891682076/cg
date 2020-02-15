@@ -1,0 +1,9 @@
+
+{include file="common/head" /}
+<ul>
+{volist name="fileup" id="vo"}
+<li><a href="{:url('admin/Fileup/download')}?id={$vo.id}">{$vo.wj}</a></li>
+{/volist}
+</ul>
+</body>
+</html>

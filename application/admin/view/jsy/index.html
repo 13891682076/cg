@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css" media="all">
+	<script src="__STATIC__/plugins/layui/layui.js"></script>
+	<script src="__STATIC__/admin/js/hs.js"></script>
+	<style type="text/css">
+		.header span{background: #009688;margin-left: 30px;padding: 10px;color:#ffffff;}
+		.header div{border-bottom: solid 2px #009688;margin-top: 8px;}
+		.header button{float: right;margin-top: -5px;}
+	</style>
+</head>
+<body style="padding: 10px;">
+	<div class="header">
+		<span>驾驶员列表</span>
+{in name="$m_add['mid']" value="$b"}
+		<button class="layui-btn layui-btn-sm" onclick="show('添加','/admin/Jsy/add/','1300px','780px')">添加</button>
+		{/in}
+		<div></div>
+
+	</div>
+<div class="layui-form-item" style="margin-top: 10px;">
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" value="{$jsy.name}" id="name" placeholder="请输入查找驾驶员姓名">
+		</div>
+		<button class="layui-btn layui-btn-primary" onclick="searchs()"><i class="layui-icon">&#xe615;</i>搜索</button>
+	</div>
+<table id="demo"class="layui-hide" lay-filter="demo"></table>
+
+	<script>
+		layui.use(['layer','table','form'],function(){
+			layer = layui.layer;
+			table = layui.table;
+			form = layui.form;
+			$ = layui.jquery;
+
+//第一个实例
+  table.render({
+    elem: '#demo'
+    ,height: 730
+   // ,url: '{:url(index)} //数据接口
+    ,page: true //开启分页
+	,id: 'demo'
+	,data:{$json}
+    ,cols: [[ //表头
+      {field: 'id', title: 'ID', width:55, fixed: true, sort: true}
+ 
+      ,{field: 'name', title: '姓名', width:75, sort: true,toolbar: '#n'}
+      ,{field: 'sex', title: '姓别', width:70, sort: true,toolbar: '#sex'}
+      ,{field: 'type', title: '驾证类型', width:80, sort: true}
+      ,{field: 'jsz',title: '驾驶证', width:172, sort: true} 
+      ,{field: 'zgz',title: '资格证', width:172} 
+      ,{field: 'sgz', title: '上岗证', width:78} 
+      ,{field: 'jsz_pic', title: '驾证图片', width:90,toolbar:'#jsz'} 
+      ,{field: 'zgz_pic', title: '资格证图片', width:100,toolbar:'#zgz'} 
+      ,{field: 'sgz_pic', title: '上岗证图片', width:100,toolbar:'#sgz'}
+       ,{field: 'bus', title: '服务车辆', width:95} 
+
+      ,{field: 'pic', title: '车辆图片', width:90,toolbar:'#pic'} 
+      ,{field: 'jianli', title: '简历', width:150} 
+      ,{field: 'status',align: 'center', title: '在岗状态', width:75,toolbar: '#status'} 
+      
+      ,{field: 'tel', title: '手机', width:118} 
+      ,{title: '操作', width:'auto',toolbar:'#bar'} 
+      
+    ]],
+limit: 16 
+  });
+ form.on('switch(status)', function(obj){
+            loading =layer.load(1, {shade: [0.1,'#fff']});
+            var id = this.value;
+            var status = obj.elem.checked===true?1:0;
+            $.post('{:url("jsyState")}',{'id':id,'status':status},function (res) {
+                layer.close(loading);
+                if (res.status==1) {
+                    tableIn.reload();
+                }else{
+                    layer.msg(res.msg,{time:1000,icon:2});
+                    return false;
+                }
+            })
+        });
+form.on('switch(sex)', function(obj){
+            loading =layer.load(1, {shade: [0.1,'#fff']});
+            var id = this.value;
+            var sex = obj.elem.checked===true?1:0;
+            $.post('{:url("jsySex")}',{'id':id,'sex':sex},function (res) {
+                layer.close(loading);
+                if (res.sex==1) {
+                    tableIn.reload();
+                }else{
+                    layer.msg(res.msg,{time:1000,icon:2});
+                    return false;
+                }
+            })
+        });
+		});
+	</script>
+<script id="n">
+	
+	<a href='jianli/?id={{d.id}}' target="_blank" >{{d.name}}</a>
+	
+	</script>
+	<script id="bar">
+	<a class="layui-btn  layui-btn-xs" href='jianli/?id={{d.id}}'target="_blank">查看</a>
+{in name="$m_add['mid']" value="$b"}
+	<button class="layui-btn  layui-btn-xs" onclick="show('编辑{{d.name}}','/admin/Jsy/add/?id={{d.id}}','1300px','780px')">编辑</button>
+	{/in}
+{in name="$m_del['mid']" value="$b"}
+	<button class="layui-btn layui-btn-danger layui-btn-xs" onclick="del({{d.id}})">删除</button>
+	{/in}
+	</script>
+<script id="jsz">
+ {{# if(d.jsz_pic){ }}<img src="/jsy/{{d.jsz_pic}}" height="35"alt=""onmouseover="layer.tips('<img src=/jsy/{{d.jsz_pic}} width=100%>',this,{tips: [2, '#fff']});" onmouseout="layer.closeAll();">{{# } }}
+	</script>
+</script>
+<script id="zgz">
+ {{# if(d.zgz_pic){ }}<img src="/jsy/{{d.zgz_pic}}" height="35"alt=""onmouseover="layer.tips('<img src=/jsy/{{d.zgz_pic}} width=100%>',this,{tips: [2, '#fff']});" onmouseout="layer.closeAll();">{{# } }}
+	</script>
+<script id="sgz">
+ {{# if(d.sgz_pic){ }}<img src="/jsy/{{d.sgz_pic}}" height="35"alt=""onmouseover="layer.tips('<img src=/jsy/{{d.sgz_pic}} width=100%>',this,{tips: [2, '#fff']});" onmouseout="layer.closeAll();">{{# } }}
+	</script>
+<script id="pic">
+ {{# if(d.pic){ }}<img src="/bus/{{d.pic}}" height="35"alt=""onmouseover="layer.tips('<img src=/bus/{{d.pic}} width=100%>',this,{tips: [2, '#fff']});" onmouseout="layer.closeAll();">{{# } }}
+	</script>
+<script type="text/html" id="status">
+    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="在岗|离岗" lay-filter="status" {{ d.status == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="sex">
+    <input type="checkbox" name="sex" value="{{d.id}}" lay-skin="switch" lay-text="男|女" lay-filter="sex" {{ d.sex == 1 ? 'checked' : '' }}>
+</script>
+	<script>
+
+		
+
+
+	
+// 搜索
+		function searchs(curpage){
+			var name = $.trim($('#name').val());
+			var url = "{:url('index')}?page="+curpage;
+			if(name){
+				url += '&name='+name;
+			}
+			window.location.href = url;
+		}
+</script>
+</body>
+</html>

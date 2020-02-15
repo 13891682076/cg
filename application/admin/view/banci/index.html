@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+	<style type="text/css">
+		.header span{background: #009688;margin-left: 30px;padding: 10px;color:#ffffff;}
+		.header div{border-bottom: solid 2px #009688;margin-top: 8px;}
+		.header button{float: right;margin-top: -5px;}
+	</style>
+</head>
+<body style="padding: 10px;">
+	<div class="header">
+		<span>班次列表</span>
+		<button class="layui-btn layui-btn-sm" onclick="add()">添加</button>
+		<div></div>
+	</div>
+<div class="layui-form-item" style="margin-top: 10px;">
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" value="{$banci.wd}" id="wd" placeholder="请输入查找的地点">
+		</div>
+		<button class="layui-btn layui-btn-primary" onclick="searchs()"><i class="layui-icon">&#xe615;</i>搜索</button>
+	</div>
+<table class="layui-table" lay-even lay-size="sm">
+    <colgroup>
+        <col width="80">
+        <col>
+        <col width="100">
+        <col width="150">
+    </colgroup>
+    <thead>
+    <tr>
+        <th style="text-align: center;">ID</th>
+        <th>线路名称</th>
+        <th>起点站</th>
+        <th>终点站</th>
+        <th>途径地</th>
+        <th>公里数</th>
+        <th>班线类型</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="banci.data.lists" id="vo"}
+    <tr>
+        <td style="text-align: center;">{$vo.id}</td>
+        <td>{$vo.xlmc}</td>
+        <td>{$vo.qd}</td>
+        <td>{$vo.zd}</td>
+        <td>{$vo.tjd}</td>
+        <td>{$vo.gls}</td>
+        <td>{$vo.bxlx}</td>
+        <td>{$vo.state?'<span class="layui-badge layui-bg-green">正常</span>':'<span class="layui-badge">暂停</span>'}</td>
+        <td>
+       <button class="layui-btn layui-btn-xs" onclick="add({$vo.id})">编辑</button>
+					<button class="layui-btn layui-btn-danger layui-btn-xs" onclick="del({$vo.id})">删除</button></td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+
+<div id="page"></div>
+
+<script>
+    layui.use(['layer','laypage'], function(){
+		$ = layui.jquery;
+        var layer = layui.layer;
+		var laypage = layui.laypage;
+			
+//执行一个laypage实例
+  laypage.render({
+			    elem: 'page'
+			    ,count:{$banci.data.total}
+			    ,limit:{$banci.pageSize}
+			    ,curr:{$banci.page}
+				,jump: function(obj, first){
+			    if(!first){
+			    	searchs(obj.curr);
+			    }
+			  }
+			});
+	
+   //表格内容筛选
+$(function(){
+       $("#filterName").keyup(function(){
+	      $("table tbody tr")
+					.hide()
+					.filter(":contains('"+( $(this).val() )+"')")
+					.show();
+	   }).keyup();
+  })
+            });
+ 
+// 添加编辑
+		function add(id){
+			layer.open({
+			  type: 2,
+			  title: id>0?'编辑班次':'添加班次',
+			  shade: 0.3,
+			  area: ['500px', '500px'],
+			  content: '{:url("add")}?id='+id
+			});
+		}
+   // 删除
+		function del(id){
+			layer.confirm('确定要删除吗？', {
+			  btn: ['确定','取消']
+			}, function(){
+			  $.post('{:url("del")}',{'id':id},function(res){
+			  	if(res.code>0){
+			  		layer.alert(res.msg,{icon:3});
+			  	}else{
+			  		layer.msg(res.msg);
+			  		setTimeout(function(){window.location.reload();},1000);
+			  	}
+			  },'json');
+			});
+		}
+	// 搜索
+		function searchs(curpage){
+			var wd = $.trim($('#wd').val());
+			var url = "{:url('index')}?page="+curpage;
+			if(wd){
+				url += '&wd='+wd;
+			}
+			window.location.href = url;
+		}
+
+</script>
+</body>
+</html>

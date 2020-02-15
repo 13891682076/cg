@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+	<script type="text/javascript" src="__STATIC__/plugins/ui.sortable.js"></script>
+	<script type="text/javascript" src="__STATIC__/plugins/ui.core.js"></script>
+<script>
+layui.use('layer',function(){
+$ = layui.jquery;
+var layer = layui.layer;
+
+$(function(){
+	$("#ch").sortable({
+		delay:1,	//修复潜在链接点击问题
+		stop:function() {
+					}
+	});
+});
+$(function(){
+	$(".bcxx").sortable({
+		delay:1,	//修复潜在链接点击问题
+		stop:function() {
+					}
+	});
+});
+});
+</script>
+	<style type="text/css">
+		.header span{background: #009688;margin-left: 30px;padding: 10px;color:#ffffff;}
+		.header div{border-bottom: solid 2px #009688;margin-top: 8px;}
+		.header button{float: right;margin-top: -5px;}
+div{width:1800px;margin:10px auto;font-size:1.15em;}
+li{width:195px;float:left;border:1px dashed red;margin:2px;padding:2px;}
+		#myList{
+			width: 100%;
+			padding: 1px;
+			list-style: none;
+			height:auto;
+			
+		}
+		 a{
+			text-decoration: none;
+			
+		}
+		#myList a:hover{
+			text-decoration: underline;
+		}
+		#myList li{height:100px;margin-bottom:32px;border-radius:10px;}
+#myList li span{background:pink;}
+		.ch{width:100%;position:absolute;left:10px;top:80px;}
+		.ch li{list-style:none;margin-top:102px;line-height:30px;height:30px;background:#888;border-radius:4px;}
+.ch li span{margin:0 20px 0 0;color:red;}
+	</style>
+</head>
+<body style="padding: 10px;">
+	<div class="header">
+		<span>动态班次</span>
+		<button class="layui-btn layui-btn-sm" onclick="add()">添加</button>
+		<div></div>
+	</div>
+
+	<title>循环班次动态时间表</title>
+	</head>
+	<body style="">
+	<h1 style="text-align:center;height:40px;">循环班次动态时间表<span style="font-size:0.8em;margin-left:200px;">今天是：2017年4月12日</span></h1>
+	<div>
+	<ul class="bcxx" id="myList">
+	{volist name="dt.xhbc" id="v"}
+	<li>
+	<span>{$v.id}</span>
+		{$v.bc}
+		</li>
+		{/volist}
+	</ul>
+	<ul class="ch ui-sortable" id="ch">
+	{volist name="dt.ch" id="vo"}
+			<li>
+			<span></span>
+			{$vo}
+			</li>
+			{/volist}
+			</ul>
+			</div>
+			</body></html>

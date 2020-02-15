@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css" media="all">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+	<style type="text/css">
+		.header span{background: #009688;margin-left: 30px;padding: 10px;color:#ffffff;}
+		.header div{border-bottom: solid 2px #009688;margin-top: 8px;}
+		.header button{float: right;margin-top: -5px;}
+	</style>
+</head>
+<body style="padding: 10px;">
+	<div class="header">
+		<span>部门</span>
+		<button class="layui-btn layui-btn-sm" onclick="add()">添加</button>
+		<div></div>
+
+	</div>
+<table id="demo"class="layui-hide" lay-filter="demo"></table>
+
+	<script type="text/javascript">
+		layui.use(['layer','table'],function(){
+			layer = layui.layer;
+			table = layui.table;
+			$ = layui.jquery;
+
+//第一个实例
+  table.render({
+    elem: '#demo'
+    ,height: 500
+   // ,url: '{:url(index)} //数据接口
+    ,page: true //开启分页
+	,id: 'demo'
+	,data:{$json}
+    ,cols: [[ //表头
+      {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+      ,{field: 'name', title: '上级部门', width:180,edit: 'text'}
+      ,{field: 'pid', title: '性别', width:80, sort: true,edit: 'text'}
+      ,{field: 'sort', title: '排序', width:80,edit: 'text'} 
+      ,{title: '操作', width:"auto",toolbar:'#bar'} 
+      
+    ]],
+
+  });
+  //监听单元格编辑
+  table.on('edit(demo)', function(obj){
+    var value = obj.value //得到修改后的值
+    ,data = obj.data //得到所在行所有键值
+    ,field = obj.field; //得到字段
+    layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+  });
+		});
+
+		// 添加编辑
+		function add(id){
+			layer.open({
+			  type: 2,
+			  title: id>0?'编辑部门':'添加部门',
+			  shade: 0.3,
+			  area: ['480px', '420px'],
+			  fixed:false,
+			  maxmin:true,
+			  content: '{:url("add")}?id='+id
+			});
+		}
+
+		// 删除
+		function del(id){
+			layer.confirm('确定要删除吗？', {
+			  btn: ['确定','取消']
+			}, function(){
+			  $.post('{:url("del")}',{'id':id},function(res){
+			  	if(res.code>0){
+			  		layer.alert(res.msg,{icon:2});
+			  	}else{
+			  		layer.msg(res.msg);
+			  		setTimeout(function(){window.location.reload();},1000);
+			  	}
+			  },'json');
+			});
+ 
+		}
+	</script>
+	<script type="text/javascript" id="bar">
+	<button class="layui-btn  layui-btn-xs" lay-event="detail({{d.id}})">查看</button>
+	<button class="layui-btn  layui-btn-xs" onclick="add({{d.id}})">编辑</button>
+{in name="$m_del['mid']" value="$b"}
+	<button class="layui-btn layui-btn-danger layui-btn-xs" onclick="del({{d.id}})">删除</button>
+	{/in}
+	</script>
+	<script>
+
+  </script>
+</body>
+</html>

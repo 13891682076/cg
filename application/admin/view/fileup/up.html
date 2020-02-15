@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+    <style>
+        .layui-form-select dl{z-index: 2;}
+        #thumb_list{padding-top: 8px;}
+        #thumb_list img{border: 1px solid #DDD;padding: 3px;border-radius: 5px;}
+        #thumb_list span{position: relative;display: inline-block;margin-right: 5px;}
+        #thumb_list span .delimg{position: absolute;right:3px;top:3px;}
+    </style>
+</head>
+<body style="padding:10px 10px;margin-bottom: 50px;">
+<div class="layui-container">
+    <form class="layui-form">
+           
+          <div class="layui-form-item">
+            <label class="layui-form-label">文件</label>
+            <div class="layui-input-block">
+                <input type="text" name="wj"  placeholder="请上传文件名" autocomplete="off" class="layui-input">
+                <input type="text" name="filename"  placeholder="请上传文件" autocomplete="off" class="layui-input">
+                <button type="button" class="layui-btn" id="fileup">
+                    <i class="layui-icon">&#xe67c;</i>上传文件
+                </button>
+        </div>
+        </div>
+    </form>
+ <div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn" onclick="save()">保存</button>
+		</div>
+	</div>
+
+</div>
+
+<script>
+   
+    layui.use(['form','element','upload'], function(){
+        var form = layui.form;
+        $ = layui.jquery;
+        var element = layui.element;
+        var upload = layui.upload;
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+        });
+        //创建一个上传组件
+        upload.render({
+            elem: '#fileup'
+            ,url: '{:url("uploads")}'
+            ,accept: 'file' //允许上传的文件类型
+            ,field:"files"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+					  if(res.code==1){
+                      $('input[name=wj]').val(res.wj);
+                      $('input[name=filename]').val(res.filename);
+                                      }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+    });
+    $(function(){
+        $(window.parent.document).find('#righttitle').text($('title').text());
+    });
+    function delimg(obj) {
+       var picurl=$(obj).attr('data');
+       $.ajax({
+           type:"post",
+           url:"{:url('cate/delimg')}",
+           data:{'url':picurl},
+           success:function (res) {
+              var picvalue=$('input[name=pic]').val();
+              var str="";
+               if(res.code==1 || res.code==2){
+                   //栏目图文本框中图片地址处理
+                   if(picvalue==picurl){
+                       $('input[name=pic]').val('');
+                   }else{
+
+                       str=picvalue.replace(picurl+",","");
+                       str=str.replace(","+picurl,"");
+                       $('input[name=pic]').val(str);
+                   }
+                   //删除/移除缩略图
+                   $(obj).parent().remove();
+                   layer.msg(res.msg);
+               }
+               if(res.code==0){
+                   layer.msg(res.msg);
+               }
+           }
+       });
+    }
+// 保存栏目
+		function save(){
+				$.post('{:url("save")}',$('form').serialize(),function(res){
+				if(res.code>0){
+					layer.alert(res.msg,{icon:2});
+				}else{
+					layer.msg(res.msg);
+					setTimeout(function(){parent.window.location.reload();},1000);
+				}
+			},'json');
+		}
+</script>
+</body>
+</html>

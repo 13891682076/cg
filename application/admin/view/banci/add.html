@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+    <style>
+        .layui-form-select dl{z-index: 2;}
+        #thumb_list{padding-top: 8px;}
+        #thumb_list img{border: 1px solid #DDD;padding: 3px;border-radius: 5px;}
+        #thumb_list span{position: relative;display: inline-block;margin-right: 5px;}
+        #thumb_list span .delimg{position: absolute;right:3px;top:3px;}
+    </style>
+</head>
+<body style="padding:10px 10px;margin-bottom: 50px;">
+<div class="layui-container">
+    <form class="layui-form" action="?" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">线路名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="xlmc" required  lay-verify="required" placeholder="请输入线路名称" autocomplete="off" class="layui-input" value="{$banci.xlmc}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">起点站</label>
+            <div class="layui-input-inline">
+                <input type="text" name="qd" placeholder="请输入起点站" autocomplete="off" class="layui-input"value="{$banci.qd}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">终点站</label>
+            <div class="layui-input-inline">
+                <input type="text" name="zd" placeholder="请输入终点站" autocomplete="off" class="layui-input"value="{$banci.zd}">
+            </div>
+        </div>
+		<div class="layui-form-item">
+            <label class="layui-form-label">途径地</label>
+            <div class="layui-input-inline">
+                <input type="text" name="tjd" placeholder="请输入途径地" autocomplete="off" class="layui-input"value="{$banci.tjd}">
+            </div>
+        </div>
+		<div class="layui-form-item">
+            <label class="layui-form-label">公里数</label>
+            <div class="layui-input-inline">
+                <input type="num" name="gls" placeholder="请输入公里数" autocomplete="off" class="layui-input"value="{$banci.gls}">
+            </div>
+        </div>
+		<div class="layui-form-item">
+            <label class="layui-form-label">班线类型</label>
+            <div class="layui-input-inline">
+                <input type="text" name="bxlx" placeholder="请输入班线类型" autocomplete="off" class="layui-input"value="{$banci.bxlx}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="state" value="1" title="正常" {$banci.state?"checked":""}>
+                <input type="radio" name="state" value="0" title="暂停" {$banci.state?"":"checked"}>
+            </div>
+        </div>
+       
+    </form>
+	 <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo" onclick="save()">保存</button>
+            </div>
+        </div>
+</div>
+<script>
+   layui.use(['layer','form'],function(){
+			form = layui.form;
+			layer = layui.layer;
+			$ = layui.jquery;
+		});
+// 保存栏目
+		function save(){
+			$.post('{:url("save")}',$('form').serialize(),function(res){
+				if(res.code>0){
+					layer.alert(res.msg,{icon:2});
+				}else{
+					layer.msg(res.msg);
+					setTimeout(function(){parent.window.location.reload();},1000);
+				}
+			},'json');
+		}
+
+  
+</script>
+</body>
+</html>

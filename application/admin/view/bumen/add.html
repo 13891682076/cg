@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+</head>
+<body style="padding: 10px;">
+	<form class="layui-form">
+		<input type="hidden" name="id" value="{$data.item.id}">
+		<div class="layui-form-item">
+			<label class="layui-form-label">部门名称</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" name="name" value="{$data.item.name}" {$data.item.id>0?'readonly':''}>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">上级部门</label>
+			<div class="layui-input-inline">
+				<select name="pid">
+					<option value=0>顶级部门</option>
+					{volist name="data.groups" id="vo"}
+					<option value="{$vo.id}" {$data.item.pid == $vo.id ? 'selected' : ''}>{$vo.name}</option>
+					{/volist}
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">排序</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input"value="{$data.item.sort}" name="sort">
+			</div>
+		</div>
+
+		
+	</form>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn" onclick="save()">保存</button>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		layui.use(['layer','form'],function(){
+			form = layui.form;
+			layer = layui.layer;
+			$ = layui.jquery;
+		});
+
+		// 保存管理员
+		function save(){
+			var id = parseInt($('input[name="id"]').val());
+			var name = $.trim($('input[name="name"]').val());
+			var pid = $('select[name="id"]').val();
+			if(name==''){
+				layer.alert('请输入部门名称',{icon:2});
+				return;
+			}
+			if(pid==0){
+				layer.alert('请选择角色',{icon:2});
+				return;
+			}
+			
+			$.post('{:url("save")}',$('form').serialize(),function(res){
+				if(res.code>0){
+					layer.alert(res.msg,{icon:2});
+				}else{
+					layer.msg(res.msg);
+					setTimeout(function(){parent.window.location.reload();},1000);
+				}
+			},'json');
+		}
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css" media="all">
+	<script src="__STATIC__/plugins/layui/layui.js"></script>
+	<style type="text/css">
+		.header span{background: #009688;margin-left: 30px;padding: 10px;color:#ffffff;}
+		.header div{border-bottom: solid 2px #009688;margin-top: 8px;}
+		.header button{float: right;margin-top: -5px;}
+	</style>
+</head>
+<body style="padding: 10px;">
+	<div class="header">
+		<span>文件</span>
+		<button class="layui-btn layui-btn-sm" onclick="up()">上传</button>
+		<div></div>
+
+	</div>
+<table id="demo"class="layui-hide" lay-filter="demo"></table>
+
+	<script>
+		layui.use(['layer','table','form'],function(){
+			layer = layui.layer;
+			table = layui.table;
+			form = layui.form;
+			$ = layui.jquery;
+
+//第一个实例
+  table.render({
+    elem: '#demo'
+    ,height: 600
+   // ,url: '{:url(index)} //数据接口
+    ,page: true //开启分页
+	,id: 'demo'
+	,data:{$json}
+    ,cols: [[ //表头
+      
+	{type: 'checkbox'}
+      ,{field: 'id', title: 'ID', width:100}
+      ,{field: 'wj', title: '文件名', width:180, sort: true}
+    
+      ,{title: '操作', width:170,toolbar:'#bar'} 
+      
+    ]],
+
+  });
+
+		});
+	</script>
+	<script id="bar">
+	<button class="layui-btn  layui-btn-xs" onclick="gaikuang({{d.id}})">查看</button>
+	<a class="layui-btn  layui-btn-xs" href="{:url('download')}?id={{d.id}}">下载</a>
+	<button class="layui-btn layui-btn-danger layui-btn-xs" onclick="del({{d.id}})">删除</button>
+
+	</script>
+
+	<script>
+		layui.use(['layer'],function(){
+			layer = layui.layer;
+			$ = layui.jquery;
+
+		});
+
+		// 添加编辑
+		function up(){
+			layer.open({
+			  type: 2,
+			  title:'文件上传页面',
+			  shade: 0.3,
+			  area: ['800px', '30%'],
+                maxmin: true,
+			 // content: '/admins.php/admins/Admin/add?id='+id
+			  content: '{:url("up")}'
+			});
+		}
+
+		// 删除
+		function del(id){
+			layer.confirm('确定要删除吗？', {
+			  btn: ['确定','取消']
+			}, function(){
+			  $.post('{:url("del")}',{'id':id},function(res){
+			  	if(res.code>0){
+			  		layer.alert(res.msg,{icon:2});
+			  	}else{
+			  		layer.msg(res.msg);
+			  		setTimeout(function(){window.location.reload();},1000);
+			  	}
+			  },'json');
+			});
+		}
+
+     
+
+	
+</script>
+</body>
+</html>

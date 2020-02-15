@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+	<style type="text/css">
+		.header span{background: #009688;margin-left: 30px;padding: 10px;color:#ffffff;}
+		.header div{border-bottom: solid 2px #009688;margin-top: 8px;}
+		.header button{float: right;margin-top: -5px;}
+	</style>
+</head>
+<body style="padding: 10px;">
+	<div class="header">
+		<span>部门</span>
+		<button class="layui-btn layui-btn-sm" onclick="add()">添加</button>
+		<div></div>
+
+	</div>
+
+<div>
+    <a href="{:url('cate/add')}" class="layui-btn layui-btn-normal">添加栏目</a>
+    <button type="submit" class="layui-btn layui-btn-danger" >更新排序</button>
+</div>
+<table class="layui-table" lay-size="md">
+    <colgroup>
+        <col width="80">
+        <col width="80">
+        <col>
+        <col width="100">
+        <col width="100">
+        <col width="200">
+    </colgroup>
+    <thead>
+    <tr style="height: 45px" pid="0">
+        <th>伸缩</th>
+        <th>ID</th>
+        <th>栏目名称</th>
+        <th>类型</th>
+        <th>排序</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="cate" id="vo"}
+    <tr pid="{$vo.pid}" id="{$vo.id}">
+        <td>
+            <button class="layui-btn layui-btn-small shensuo" type="button" style="width: 30px;height:30px;padding:0;line-height:30px">
+                <i class="layui-icon">+</i>
+            </button>
+        </td>
+        <td>{$vo.id}</td>
+        <td>{$vo.name}</td>
+        <td>{$vo.type}</td>
+        <td><input type="text" name="{$vo.id}" value="{$vo.sort}" style="width: 70px; height: 25px;" class="layui-input"></td>
+        <td><button class="layui-btn layui-btn-xs" onclick="add({$vo.id})"><i class="layui-icon">&#xe642;</i>编辑</button>
+			<button class="layui-btn layui-btn-danger layui-btn-xs" onclick="del({$vo.id})"><i class="layui-icon">&#xe640;</i>删除</button></td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+<script>
+    layui.use(['layer'],function(){
+			layer = layui.layer;
+			$ = layui.jquery;
+		
+    $(function(){
+             //栏目伸缩
+        //1.隐藏非顶级栏目
+        $('tr[pid!=0]').hide();
+        //2.子栏目展开
+        $('.shensuo').on('click',function () {
+            //获取按钮状态
+            var flag=$(this).find('i').text();
+            var index=$(this).parents("tr").attr('id');
+            if(flag=="+"){
+                //改变按钮状态
+                $(this).find('i').text("-");
+                //展开子栏目录
+                $('tr[pid='+index+']').fadeIn('slow');
+            }else{
+                $(this).find('i').text("+");
+                //收起子栏目
+                //$('tr[pid='+index+']').fadeOut('slow');
+                hidecate(index);
+            }
+        });
+   });
+    //隐藏子栏目 pid 父级分类id,递归隐藏子栏目
+    function hidecate(pid) {
+        $('tr[pid='+pid+']').each(function () {
+            hidecate($(this).attr('id'));
+        })
+        $('tr[pid='+pid+']').fadeOut('slow');
+        $('tr[pid='+pid+']').find('.shensuo').find('i').text("+");
+
+    }
+});
+// 添加编辑
+		function add(id){
+			layer.open({
+			  type: 2,
+			  title: id>0?'编辑栏目':'添加栏目',
+			  shade: 0.3,
+			  area: ['1000px', '720px'],
+			  fixed:false,
+			  maxmin:true,
+			  content: '{:url("add")}?id='+id
+			});
+		}
+// 删除
+		function del(id){
+			layer.confirm('确定要删除吗？', {
+			  btn: ['确定','取消']
+			}, function(){
+			  $.post('{:url("del")}',{'id':id},function(res){
+			  	if(res.code>0){
+			  		layer.alert(res.msg,{icon:2});
+			  	}else{
+			  		layer.msg(res.msg);
+			  		setTimeout(function(){window.location.reload();},1000);
+			  	}
+			  },'json');
+			});
+		}
+</script>
+</body>
+</html>

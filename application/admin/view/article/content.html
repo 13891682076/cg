@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>{$res.title}</title>
+ </head>
+ <body>
+  <h2>{$res.title}</h2>
+  <p>作者：{$res.author}有{$res.pic}张图片{$res.addtime|date="Y-m-d",###}</p>
+ {volist name="pics" id="vo"}
+  <img src="/{$vo.pic}" style="width:100px"/>
+  {/volist}
+  <p>{$res.content}</p>
+  <p><a href="content/?id={$res.id-1}">上一篇</a><a href="content/?id={$res.id+1}">下一篇</a></p>
+ </body>
+</html>

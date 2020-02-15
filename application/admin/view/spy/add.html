@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+<script src="__STATIC__/admin/js/hs.js"></script>
+<style>
+        .layui-form-select dl{z-index: 2;}
+        #jsz_list,#zgz_list,#sgz_list{padding-top: 8px;}
+        #jsz_list img,#zgz_list img,#sgz_list img{border: 1px solid #DDD;padding: 3px;border-radius: 5px;}
+        #jsz_list span,#zgz_list span,#sgz_list span{position: relative;display: inline-block;margin-right: 5px;}
+        #jsz_list span .delimg,#zgz_list span .delimg,#sgz_list span .delimg{position: absolute;right:3px;top:3px;}
+		
+    </style>
+</head>
+<body style="padding: 10px;">
+	<form class="layui-form" >
+		<input type="hidden" name="id" value="{$spy.item.id}">
+		<div class="layui-form-item">
+			<label class="layui-form-label">姓名</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" required name="name" value="{$spy.item.name}" >
+			</div>
+			
+			<label class="layui-form-label">身份证</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" required name="sfz" value="{$spy.item.sfz}" >
+			</div>
+
+			
+		
+            <label class="layui-form-label">上岗证号</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" required name="sgz" value="{$spy.item.sgz}" >
+			</div>
+      </div>
+	<div class="layui-form-item">
+            <label class="layui-form-label">身份证缩略图</label>
+            <div class="layui-input-inline">
+                <input type="text" name="sfz_pic"  placeholder="请上传行驶证"value="{$spy.item.sfz_pic}" autocomplete="off" class="layui-input">
+                <button type="button" class="layui-btn"  id="sfz_pic" onclick="up('sfz_pic','sfz/')">
+                    <i class="layui-icon" style="float:left">&#xe67c;</i>上传身份证
+                </button>
+                <div id="jsz_list">
+{if condition="$spy.item.sfz_pic  neq ''"}
+                    <span>
+                        <img src="/spy/{$spy.item.sfz_pic}" alt="" height="80">
+                        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delsfz(this);"data="{$spy.item.sfz_pic}">
+                        <i class="layui-icon">&#xe640;</i>
+                        </button>
+                    </span>
+                  {/if}
+             </div>
+             </div>
+
+            <label class="layui-form-label">照片</label>
+            <div class="layui-input-inline">
+                <input type="text" name="zp"  placeholder="请上传照片"  value="{$spy.item.zp}" autocomplete="off" class="layui-input">
+                <button type="button" class="layui-btn" id="zp">
+                    <i class="layui-icon" style="float:left">&#xe67c;</i>上传照片
+                </button>
+                <div id="zgz_list">
+{if condition="$spy.item.zp  neq ''"}
+                    <span>
+                        <img src="/spy/{$spy.item.zp}" alt="" height="80">
+                        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delzp(this);"data="{$spy.item.zp}">
+                        <i class="layui-icon">&#xe640;</i>
+                        </button>
+                    </span>
+                  {/if}
+             </div>
+             </div>
+ 
+           
+             </div>
+	<div class="layui-form-item">   
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-inline">
+                <input type="text" name="sex" value="{$spy.item.sex}"placeholder="请输入性别" autocomplete="off" class="layui-input">
+            </div>
+       
+            <label class="layui-form-label">服务车辆</label>
+            <div class="layui-input-inline">
+                <input type="text" name="bus" value="{$spy.item.bus}"placeholder="请输入车辆" autocomplete="off" class="layui-input">
+            </div>
+     <label class="layui-form-label">手机</label>
+            <div class="layui-input-inline">
+                <input type="text" name="tel" value="{$spy.item.tel}"placeholder="请输入手机号" autocomplete="off" class="layui-input">
+            </div>
+           
+        </div>
+	
+
+<div class="layui-form-item">
+            <label class="layui-form-label">售票员简历</label>
+            <div class="layui-input-block">
+                <textarea id="record" name="jianli" type="text/plain" style="height:200px;">{$spy.item.jianli}</textarea>
+            </div>
+        </div>
+<div class="layui-form-item">
+ <label class="layui-form-label">备注</label>
+            <div class="layui-input-inline">
+                <input type="text" name="beizu" value="{$spy.item.beizu}" placeholder="备注信息" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+		
+	</form>
+	
+<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn"  onclick="save()">保存</button>
+		</div>
+	</div>	
+	<!-- 配置文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.all.js"></script>
+<script>
+    var ue = UE.getEditor('record',{
+        initialFrameWidth:null,
+    });
+    layui.use(['form','upload','laydate'], function(){
+        var form = layui.form;
+        var upload = layui.upload;
+		laydate = layui.laydate;//日期插件
+		    $ = layui.jquery;
+
+ laydate.render({
+    elem: '#addtime' //指定元素
+	,type: 'datetime'
+  });
+ laydate.render({
+    elem: '#syrq' //指定元素
+	,type: 'datetime'
+  });
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+        });
+        
+        //创建一个行驶证上传组件
+        upload.render({
+            elem: '#sfz_pic'
+            ,url: '{:url("sfz")}'
+            ,accept: 'images' //允许上传的文件类型
+            ,field:"imgfile"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+                    if(res.code==1){
+                        var sfz_pic=$('input[name=sfz_pic]').val();
+                        if(sfz_pic==""){
+                            $('input[name=sfz_pic]').val(res.img);
+                        }else{
+                            $('input[name=sfz_pic]').val(sfz_pic+","+res.img);
+                        }
+                        var str;
+                        str="<span>";
+                        str=str+'<img src="/spy/'+res.img+'" alt="" height="80">';
+                        str=str+'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delsfz(this);" data="'+res.img+'">';
+                        str=str+'<i class="layui-icon">&#xe640;</i>';
+                        str=str+'</button>';
+                        str=str+'</span>';
+                        $('#jsz_list').append(str);
+                    }else{
+
+                    }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+ //创建一个资格证上传组件
+        upload.render({
+            elem: '#zp'
+            ,url: '{:url("zp")}'
+            ,accept: 'images' //允许上传的文件类型
+            ,field:"imgfile"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+                    if(res.code==1){
+                        var zp=$('input[name=zp]').val();
+                        if(zp==""){
+                            $('input[name=zp]').val(res.img);
+                        }else{
+                            $('input[name=zp]').val(zp+","+res.img);
+                        }
+                        var str;
+                        str="<span>";
+                        str=str+'<img src="/spy/'+res.img+'" alt="" height="80">';
+                        str=str+'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delzp(this);" data="'+res.img+'">';
+                        str=str+'<i class="layui-icon">&#xe640;</i>';
+                        str=str+'</button>';
+                        str=str+'</span>';
+                        $('#zgz_list').append(str);
+                    }else{
+
+                    }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+//创建一个上岗证上传组件
+        upload.render({
+            elem: '#sgz_pic'
+            ,url: '{:url("sgz")}'
+            ,accept: 'images' //允许上传的文件类型
+            ,field:"imgfile"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+                    if(res.code==1){
+                        var pic=$('input[name=sgz_pic]').val();
+                        if(pic==""){
+                            $('input[name=sgz_pic]').val(res.img);
+                        }else{
+                            $('input[name=sgz_pic]').val(pic+","+res.img);
+                        }
+                        var str;
+                        str="<span>";
+                        str=str+'<img src="/spy/'+res.img+'" alt="" height="80">';
+                        str=str+'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delsgz(this);" data="'+res.img+'">';
+                        str=str+'<i class="layui-icon">&#xe640;</i>';
+                        str=str+'</button>';
+                        str=str+'</span>';
+                        $('#sgz_list').append(str);
+                    }else{
+
+                    }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+
+    });
+ //删除身份证图片
+    function delsfz(obj) {
+        var picurl=$(obj).attr('data');
+        $.ajax({
+            type:"post",
+            url:"{:url('Base/delimg')}",
+            data:{'url':picurl},
+            success:function (res) {
+                var picvalue=$('input[name=sfz_pic]').val();
+                var str="";
+                if(res.code==1 || res.code==2){
+                    //栏目图片文本框中图片地址处理
+                    if(picvalue==picurl){
+                        $('input[name=sfz_pic]').val('');
+                    }else{
+                        str=picvalue.replace(picurl+",","");
+                        str=str.replace(","+picurl,"");
+                        $('input[name=sfz_pic]').val(str);
+                    }
+                    //删除/移除缩略图
+                    $(obj).parent().remove();
+                    layer.msg(res.msg);
+                }
+                if(res.code==0){
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+//删除照片
+    function delzp(obj) {
+        var picurl=$(obj).attr('data');
+        $.ajax({
+            type:"post",
+            url:"{:url('Base/delimg')}",
+            data:{'url':picurl},
+            success:function (res) {
+                var picvalue=$('input[name=zp]').val();
+                var str="";
+                if(res.code==1 || res.code==2){
+                    //栏目图片文本框中图片地址处理
+                    if(picvalue==picurl){
+                        $('input[name=zp]').val('');
+                    }else{
+                        str=picvalue.replace(picurl+",","");
+                        str=str.replace(","+picurl,"");
+                        $('input[name=zp]').val(str);
+                    }
+                    //删除/移除缩略图
+                    $(obj).parent().remove();
+                    layer.msg(res.msg);
+                }
+                if(res.code==0){
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+    //删除身份证图片
+    function delsgz(obj) {
+        var picurl=$(obj).attr('data');
+        $.ajax({
+            type:"post",
+            url:"{:url('Base/delimg')}",
+            data:{'url':picurl},
+            success:function (res) {
+                var picvalue=$('input[name=sgz]').val();
+                var str="";
+                if(res.code==1 || res.code==2){
+                    //栏目图片文本框中图片地址处理
+                    if(picvalue==picurl){
+                        $('input[name=sgz]').val('');
+                    }else{
+                        str=picvalue.replace(picurl+",","");
+                        str=str.replace(","+picurl,"");
+                        $('input[name=sgz]').val(str);
+                    }
+                    //删除/移除缩略图
+                    $(obj).parent().remove();
+                    layer.msg(res.msg);
+                }
+                if(res.code==0){
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+	//保存售票员信息
+function save(){
+			$.post('{:url("save")}',$('form').serialize(),function(res){
+				if(res.code>0){
+					layer.alert(res.msg,{icon:1});
+				}else{
+					layer.msg(res.msg);
+					setTimeout(function(){parent.window.location.reload();},1000);
+				}
+			},'json');
+		}
+</script>
+</body>
+</html>

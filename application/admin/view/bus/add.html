@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+<style>
+        .layui-form-select dl{z-index: 2;}
+        #xsz_list,#yyz_list,#sfz_list{padding-top: 8px;}
+        #xsz_list img,#yyz_list img,#sfz_list img{border: 1px solid #DDD;padding: 3px;border-radius: 5px;}
+        #xsz_list span,#yyz_list span,#sfz_list span{position: relative;display: inline-block;margin-right: 5px;}
+        #xsz_list span .delimg,#yyz_list span .delimg,#sfz_list span .delimg{position: absolute;right:3px;top:3px;}
+		
+    </style>
+</head>
+<body style="padding: 10px;">
+	<form class="layui-form" >
+		<input type="hidden" name="id" value="{$bus.item.id}">
+		<div class="layui-form-item">
+			<label class="layui-form-label">车号</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" required name="ch" value="{$bus.item.ch}" {$bus.item.id>0?'readonly':''}>
+			</div>
+			
+			<label class="layui-form-label">道路运输证号</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" required name="dlzh" value="{$bus.item.dlzh}" {$bus.item.id>0?'readonly':''}>
+			</div>
+
+			<label class="layui-form-label">部&nbsp;&nbsp;&nbsp;&nbsp;门</label>
+			<div class="layui-input-inline">
+				<select name="cid">
+					<option value=0></option>
+					{volist name="bus.bm" id="vo"}
+					<option value="{$vo.id}" {eq name="vo.id" value="$bus.item.cid"}selected{/eq}>{$vo.name}</option>
+					
+					{/volist}
+				</select>
+			</div>
+		
+            <label class="layui-form-label">车型</label>
+            <div class="layui-input-inline">
+                <input type="text" name="type" value="{$bus.item.type}"placeholder="请输入车型" autocomplete="off" class="layui-input">
+            </div>
+      </div>
+	<div class="layui-form-item">
+            <label class="layui-form-label">行驶证缩略图</label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="xsz"  placeholder="请上传行驶证"value="{$bus.item.xsz}" autocomplete="off" class="layui-input">
+                <button type="button" class="layui-btn" id="xsz">
+                    <i class="layui-icon" style="float:left">&#xe67c;</i>上传行驶证
+                </button>
+                <div id="xsz_list">
+{if condition="$bus.item.xsz  neq ''"}
+                    <span>
+                        <img src="/bus/{$bus.item.xsz}" alt="" height="80">
+                        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delxsz(this);"data="{$bus.item.xsz}">
+                        <i class="layui-icon">&#xe640;</i>
+                        </button>
+                    </span>
+                  {/if}
+             </div>
+             </div>
+
+            <label class="layui-form-label">营运证缩略图</label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="yyz"  placeholder="请上传营运证"  value="{$bus.item.yyz}" autocomplete="off" class="layui-input">
+                <button type="button" class="layui-btn" id="yyz">
+                    <i class="layui-icon" style="float:left">&#xe67c;</i>上传营运证
+                </button>
+                <div id="yyz_list">
+{if condition="$bus.item.yyz  neq ''"}
+                    <span>
+                        <img src="/bus/{$bus.item.yyz}" alt="" height="80">
+                        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delyyz(this);"data="{$bus.item.yyz}">
+                        <i class="layui-icon">&#xe640;</i>
+                        </button>
+                    </span>
+                  {/if}
+             </div>
+             </div>
+<label class="layui-form-label">车辆图片</label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="pic"  placeholder="请上传车辆图片"  value="{$bus.item.pic}" autocomplete="off" class="layui-input">
+                <button type="button" class="layui-btn" id="pic">
+                    <i class="layui-icon" style="float:left">&#xe67c;</i>上传车辆图片
+                </button>
+                <div id="pic_list">
+{if condition="$bus.item.pic  neq ''"}
+                    <span>
+                        <img src="/bus/{$bus.item.pic}" alt="" height="80">
+                        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delpic(this);"data="{$bus.item.pic}">
+                        <i class="layui-icon">&#xe640;</i>
+                        </button>
+                    </span>
+                  {/if}
+             </div>
+             </div>
+             </div>
+	<div class="layui-form-item">   
+            <label class="layui-form-label">座位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="zw" value="{$bus.item.zw}" placeholder="请输入座位数" autocomplete="off" class="layui-input">
+            </div>
+       
+            <label class="layui-form-label">登记日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="rq"id="addtime" value="{$bus.item.rq}" required  lay-verify="required" placeholder="请输入登记日期" autocomplete="off" class="layui-input">
+            </div>
+     
+            <label class="layui-form-label">类型等级</label>
+            <div class="layui-input-inline">
+                 <input type="text" name="lj" value="{$bus.item.lj}" placeholder="请输入类型等级" autocomplete="off" class="layui-input">
+            </div>
+     
+            <label class="layui-form-label">技术等级<label>
+            <div class="layui-input-inline">
+                <input type="text" name="jsdj" value="{$bus.item.jsdj}" placeholder="请输入技术等级" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+	<div class="layui-form-item"> 
+ <label class="layui-form-label">客运线路</label>
+            <div class="layui-input-inline">
+                <input type="text" name="kyxl" value="{$bus.item.kyxl}" placeholder="客运线路" autocomplete="off" class="layui-input">
+            </div>
+        
+<label class="layui-form-label">是否安装GPS</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" name="isjps" lay-skin="switch" {$bus.item.isjps?"checked":"0"} lay-text="是|否" value="{$bus.item.istop}">
+            </div>
+<label class="layui-form-label">审验日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="syrq"id="syrq" value="{$bus.item.syrq}" required  lay-verify="required" placeholder="请输入审验时间" autocomplete="off" class="layui-input">
+            </div>
+            </div>
+
+ <div class="layui-form-item">
+            <label class="layui-form-label">身份证缩略图</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="sfz"  placeholder="请上传身份证" autocomplete="off" class="layui-input">
+				
+                <button type="button" class="layui-btn" id="sfz">
+                    <i class="layui-icon">&#xe67c;</i>上传身份证
+                </button>
+                <div id="sfz_list">
+{volist name="sfzs" id="vo"}
+                    {if condition="$vo  neq ''"}
+                    <span>
+                        <img src="/bus/{$vo.pic}" alt="" height="80">
+                        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delsfz(this);"data="{$vo.pic}">
+                        <i class="layui-icon">&#xe640;</i>
+                        </button>
+                    </span>
+                    {/if}
+                    {/volist}
+                </div>
+            </div>
+        </div>
+
+<div class="layui-form-item">
+            <label class="layui-form-label">承包变更信息</label>
+            <div class="layui-input-block">
+                <textarea id="record" name="record" type="text/plain" style="height:200px;">{$bus.item.record}</textarea>
+            </div>
+        </div>
+<div class="layui-form-item">
+ <label class="layui-form-label">备注</label>
+            <div class="layui-input-inline">
+                <input type="text" name="bz" value="{$bus.item.bz}" placeholder="备注信息" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+		
+	</form>
+	
+<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn"  onclick="save()">保存</button>
+		</div>
+	</div>	
+	<!-- 配置文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.all.js"></script>
+<script>
+    var ue = UE.getEditor('record',{
+        initialFrameWidth:null,
+    });
+    layui.use(['form','upload','laydate'], function(){
+        var form = layui.form;
+        var upload = layui.upload;
+		laydate = layui.laydate;//日期插件
+		    $ = layui.jquery;
+
+ laydate.render({
+    elem: '#addtime' //指定元素
+	,type: 'datetime'
+  });
+ laydate.render({
+    elem: '#syrq' //指定元素
+	,type: 'datetime'
+  });
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+        });
+        
+        //创建一个行驶证上传组件
+        upload.render({
+            elem: '#xsz'
+            ,url: '{:url("xsz")}'
+            ,accept: 'images' //允许上传的文件类型
+            ,field:"imgfile"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+                    if(res.code==1){
+                        var xsz=$('input[name=xsz]').val();
+                        if(xsz==""){
+                            $('input[name=xsz]').val(res.img);
+                        }else{
+                            $('input[name=xsz]').val(xsz+","+res.img);
+                        }
+                        var str;
+                        str="<span>";
+                        str=str+'<img src="/bus/'+res.img+'" alt="" height="80">';
+                        str=str+'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delxsz(this);" data="'+res.img+'">';
+                        str=str+'<i class="layui-icon">&#xe640;</i>';
+                        str=str+'</button>';
+                        str=str+'</span>';
+                        $('#xsz_list').append(str);
+                    }else{
+
+                    }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+ //创建一个营运证上传组件
+        upload.render({
+            elem: '#yyz'
+            ,url: '{:url("yyz")}'
+            ,accept: 'images' //允许上传的文件类型
+            ,field:"imgfile"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+                    if(res.code==1){
+                        var yyz=$('input[name=yyz]').val();
+                        if(yyz==""){
+                            $('input[name=yyz]').val(res.img);
+                        }else{
+                            $('input[name=yyz]').val(yyz+","+res.img);
+                        }
+                        var str;
+                        str="<span>";
+                        str=str+'<img src="/bus/'+res.img+'" alt="" height="80">';
+                        str=str+'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delyyz(this);" data="'+res.img+'">';
+                        str=str+'<i class="layui-icon">&#xe640;</i>';
+                        str=str+'</button>';
+                        str=str+'</span>';
+                        $('#yyz_list').append(str);
+                    }else{
+
+                    }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+//创建一个车辆图片上传组件
+        upload.render({
+            elem: '#pic'
+            ,url: '{:url("pic")}'
+            ,accept: 'images' //允许上传的文件类型
+            ,field:"imgfile"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+                    if(res.code==1){
+                        var pic=$('input[name=pic]').val();
+                        if(pic==""){
+                            $('input[name=pic]').val(res.img);
+                        }else{
+                            $('input[name=pic]').val(pic+","+res.img);
+                        }
+                        var str;
+                       str="<span>";
+                        str=str+'<img src="/bus/'+res.img+'" alt="" height="80">';
+                        str=str+'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delpic(this);" data="'+res.img+'">';
+                        str=str+'<i class="layui-icon">&#xe640;</i>';
+                        str=str+'</button>';
+                        str=str+'</span>';
+                        $('#pic_list').append(str);
+                    }else{
+
+                    }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+//创建一个身份上传组件
+        upload.render({
+            elem: '#sfz'
+            ,url: '{:url("sfz")}'
+            ,accept: 'images' //允许上传的文件类型
+            ,field:"imgfile"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+                    if(res.code==1){
+                        var pic=$('input[name=sfz]').val();
+                        if(pic==""){
+                            $('input[name=sfz]').val(res.img);
+                        }else{
+                            $('input[name=sfz]').val(pic+","+res.img);
+                        }
+                        var str;
+                        str="<span>";
+                        str=str+'<img src="/bus/'+res.img+'" alt="" height="80">';
+                        str=str+'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delsfz(this);" data="'+res.img+'">';
+                        str=str+'<i class="layui-icon">&#xe640;</i>';
+                        str=str+'</button>';
+                        str=str+'</span>';
+                        $('#sfz_list').append(str);
+                    }else{
+
+                    }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+
+    });
+ //删除行驶证证图片
+    function delxsz(obj) {
+        var picurl=$(obj).attr('data');
+        $.ajax({
+            type:"post",
+            url:"{:url('Base/delimg')}",
+            data:{'url':picurl},
+            success:function (res) {
+                var picvalue=$('input[name=xsz]').val();
+                var str="";
+                if(res.code==1 || res.code==2){
+                    //栏目图片文本框中图片地址处理
+                    if(picvalue==picurl){
+                        $('input[name=xsz]').val('');
+                    }else{
+                        str=picvalue.replace(picurl+",","");
+                        str=str.replace(","+picurl,"");
+                        $('input[name=xsz]').val(str);
+                    }
+                    //删除/移除缩略图
+                    $(obj).parent().remove();
+                    layer.msg(res.msg);
+                }
+                if(res.code==0){
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+//删除营运证图片
+    function delyyz(obj) {
+        var picurl=$(obj).attr('data');
+        $.ajax({
+            type:"post",
+            url:"{:url('Base/delimg')}",
+            data:{'url':picurl},
+            success:function (res) {
+                var picvalue=$('input[name=yyz]').val();
+                var str="";
+                if(res.code==1 || res.code==2){
+                    //栏目图片文本框中图片地址处理
+                    if(picvalue==picurl){
+                        $('input[name=yyz]').val('');
+                    }else{
+                        str=picvalue.replace(picurl+",","");
+                        str=str.replace(","+picurl,"");
+                        $('input[name=yyz]').val(str);
+                    }
+                    //删除/移除缩略图
+                    $(obj).parent().remove();
+                    layer.msg(res.msg);
+                }
+                if(res.code==0){
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+//删除车辆图片
+    function delpic(obj) {
+        var picurl=$(obj).attr('data');
+        $.ajax({
+            type:"post",
+            url:"{:url('Base/delimg')}",
+            data:{'url':picurl},
+            success:function (res) {
+                var picvalue=$('input[name=pic]').val();
+                var str="";
+                if(res.code==1 || res.code==2){
+                    //栏目图片文本框中图片地址处理
+                    if(picvalue==picurl){
+                        $('input[name=pic]').val('');
+                    }else{
+                        str=picvalue.replace(picurl+",","");
+                        str=str.replace(","+picurl,"");
+                        $('input[name=pic]').val(str);
+                    }
+                    //删除/移除缩略图
+                    $(obj).parent().remove();
+                    layer.msg(res.msg);
+                }
+                if(res.code==0){
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+    //删除身份证图片
+    function delsfz(obj) {
+        var picurl=$(obj).attr('data');
+        $.ajax({
+            type:"post",
+            url:"{:url('Base/delimg')}",
+            data:{'url':picurl},
+            success:function (res) {
+                var picvalue=$('input[name=sfz]').val();
+                var str="";
+                if(res.code==1 || res.code==2){
+                    //栏目图片文本框中图片地址处理
+                    if(picvalue==picurl){
+                        $('input[name=sfz]').val('');
+                    }else{
+                        str=picvalue.replace(picurl+",","");
+                        str=str.replace(","+picurl,"");
+                        $('input[name=sfz]').val(str);
+                    }
+                    //删除/移除缩略图
+                    $(obj).parent().remove();
+                    layer.msg(res.msg);
+                }
+                if(res.code==0){
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+	//保存车辆信息
+function save(){
+
+			$.post('{:url("save")}',$('form').serialize(),function(res){
+				if(res.code>0){
+					layer.alert(res.msg,{icon:2});
+				}else{
+					layer.msg(res.msg);
+					setTimeout(function(){parent.window.location.reload();},1000);
+				}
+			},'json');
+		}
+</script>
+</body>
+</html>

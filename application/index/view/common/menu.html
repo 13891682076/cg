@@ -1,0 +1,11 @@
+
+                            {volist name="cate" id="vo"}
+                            <li><a  href="{$vo.id}" target><strong>{$vo.name}</strong></a><i></i>
+                                <ul class>
+                                    {volist name="vo.child" id="v"}
+                                    <li class><a class href="{$v.id}" target><strong>{$v.name}</strong></a></li>
+                                    {/volist}
+                                </ul>
+                            </li>
+                            {/volist}
+                     

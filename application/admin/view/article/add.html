@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/layui/css/layui.css">
+	<script type="text/javascript" src="__STATIC__/plugins/layui/layui.js"></script>
+<style>
+        .layui-form-select dl{z-index: 2;}
+        #thumb_list{padding-top: 8px;}
+        #thumb_list img{border: 1px solid #DDD;padding: 3px;border-radius: 5px;}
+        #thumb_list span{position: relative;display: inline-block;margin-right: 5px;}
+        #thumb_list span .delimg{position: absolute;right:3px;top:3px;}
+    </style>
+</head>
+<body style="padding: 10px;">
+	<form class="layui-form" >
+		<input type="hidden" name="id" value="{$article.id}">
+		<div class="layui-form-item">
+			<label class="layui-form-label">标题</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" required name="title" value="{$article.title}" {$article.id>0?'readonly':''}>
+			</div>
+		</div>
+<div class="layui-form-item">
+			<label class="layui-form-label">部&nbsp;&nbsp;&nbsp;&nbsp;门</label>
+			<div class="layui-input-inline">
+				<select name="cid">
+					<option value=0></option>
+					{volist name="bm" id="vo"}
+					<option value="{$vo.id}" {eq name="vo.id" value="$article.cid"}selected{/eq}>{$vo.name}</option>
+					
+					{/volist}
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item">
+            <label class="layui-form-label">关键字</label>
+            <div class="layui-input-block">
+                <input type="text" name="keyword" value="{$article.keyword}"placeholder="请输入内容关键字" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <textarea name="desc" placeholder="请输入内容描述" class="layui-textarea">{$article.desc}</textarea>
+            </div>
+        </div>
+               
+        <div class="layui-form-item">
+            <label class="layui-form-label">作者</label>
+            <div class="layui-input-inline">
+                <input type="text" name="author" value="城固县汽车运输公司" placeholder="请输入作者" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">浏览次数</label>
+            <div class="layui-input-inline">
+                <input type="text" name="views" value="0" required  lay-verify="required" placeholder="请输入浏览次数" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">添加时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="addtime"id="addtime" value="<?php echo date('Y/m/d H:i:s',time())?>" required  lay-verify="required" placeholder="请输入添加时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否置顶</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" name="status" lay-skin="switch" {$article.status?"checked":"0"} lay-text="置顶|取消" value="{$article.status}">
+            </div>
+        </div>
+ <div class="layui-form-item">
+            <label class="layui-form-label">缩略图</label>
+            <div class="layui-input-block">
+                <input type="text" name="pic" placeholder="请上传缩略图" autocomplete="off" class="layui-input">
+                <button type="button" class="layui-btn" id="uploadimg">
+                    <i class="layui-icon">&#xe67c;</i>上传缩略图
+                </button>
+                <div id="thumb_list">
+{volist name="pics" id="vo"}
+                    {if condition="$vo  neq ''"}
+                    <span>
+                        <img src="/{$vo.pic}" alt="" height="80">
+                        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delimg(this);"data="{$vo.pic}">
+                        <i class="layui-icon">&#xe640;</i>
+                        </button>
+                    </span>
+                    {/if}
+                    {/volist}
+                </div>
+            </div>
+        </div>
+
+<div class="layui-form-item">
+            <label class="layui-form-label">内容</label>
+            <div class="layui-input-block">
+                <textarea id="content" name="content" type="text/plain" style="height:300px;">{$article.content}</textarea>
+            </div>
+        </div>
+		
+	</form>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn"  onclick="save()">保存</button>
+		</div>
+	</div>	
+
+	<!-- 配置文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.all.js"></script>
+<script>
+    var ue = UE.getEditor('content',{
+        initialFrameWidth:null,
+    });
+    layui.use(['form','upload','laydate'], function(){
+        var form = layui.form;
+        var upload = layui.upload;
+		laydate = layui.laydate;//日期插件
+		    $ = layui.jquery;
+
+ laydate.render({
+    elem: '#addtime' //指定元素
+	,type: 'datetime'
+  });
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+        });
+        //监听栏目
+        form.on('select(lanmu)', function(data){
+            console.log(data.elem); //得到select原始DOM对象
+            console.log(data.value); //得到被选中的值
+            var lmtype=$(data.elem).find('option:selected').attr('data');
+            switch (lmtype){
+                case "6":
+                    $('#team').fadeIn();
+                    $('#model').hide();
+                    break;
+                case "3":
+                    $('#model').fadeIn();
+                    $('#team').hide();
+                    break;
+                default :
+                    $('#model').hide();
+                    $('#team').hide();
+                    break;
+            }
+        });
+        //创建一个上传组件
+        upload.render({
+            elem: '#uploadimg'
+            ,url: '{:url("Base/uploadimg")}'
+            ,accept: 'images' //允许上传的文件类型
+            ,field:"imgfile"
+            ,size: 2048 //最大允许上传的文件大小
+            ,done: function(res, index, upload){ //上传后的回调
+                layer.close(layer.index,{isOutAnim:true});
+                setTimeout(function () {
+                    layer.msg(res.msg);
+                    if(res.code==1){
+                        var pic=$('input[name=pic]').val();
+                        if(pic==""){
+                            $('input[name=pic]').val(res.img);
+                        }else{
+                            $('input[name=pic]').val(pic+","+res.img);
+                        }
+                        var str;
+                        str="<span>";
+                        str=str+'<img src="/'+res.img+'" alt="" height="80">';
+                        str=str+'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs delimg" onclick="delimg(this);" data="'+res.img+'">';
+                        str=str+'<i class="layui-icon">&#xe640;</i>';
+                        str=str+'</button>';
+                        str=str+'</span>';
+                        $('#thumb_list').append(str);
+                    }else{
+
+                    }
+
+                },500);
+            }
+            ,before:function () {
+                var index = layer.load();
+            }
+
+            //,……
+        })
+    });
+
+
+    //删除栏目图片
+    function delimg(obj) {
+        var picurl=$(obj).attr('data');
+        $.ajax({
+            type:"post",
+            url:"{:url('Base/delimg')}",
+            data:{'url':picurl},
+            success:function (res) {
+                var picvalue=$('input[name=pic]').val();
+                var str="";
+                if(res.code==1 || res.code==2){
+                    //栏目图片文本框中图片地址处理
+                    if(picvalue==picurl){
+                        $('input[name=pic]').val('');
+                    }else{
+                        str=picvalue.replace(picurl+",","");
+                        str=str.replace(","+picurl,"");
+                        $('input[name=pic]').val(str);
+                    }
+                    //删除/移除缩略图
+                    $(obj).parent().remove();
+                    layer.msg(res.msg);
+                }
+                if(res.code==0){
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+	//保存文章
+function save(){
+			$.post('{:url("save")}',$('form').serialize(),function(res){
+				if(res.code>0){
+					layer.alert(res.msg,{icon:2});
+				}else{
+					layer.msg(res.msg);
+					setTimeout(function(){parent.window.location.reload();},1000);
+				}
+			},'json');
+		}
+</script>
+</body>
+</html>
